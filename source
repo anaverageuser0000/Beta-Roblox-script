@@ -1,0 +1,164 @@
+-- Version 1.0.3
+
+function btools(load)
+	print(load)
+	local BtoolsGui = Instance.new("ScreenGui")
+	BtoolsGui.Name = "BtoolsGui"
+	BtoolsGui.Parent = game.Players.LocalPlayer.PlayerGui
+	local BtoolsFrame = Instance.new("ScrollingFrame")
+	BtoolsFrame.Name = "BtoolsFrame"
+	BtoolsFrame.Parent = BtoolsGui
+	BtoolsFrame.Size = UDim2.new(0, 75, 0, 130)
+
+	BtoolsFrame.Position = UDim2.new(0, 100, 0, 100)
+	local CGui = Instance.new("TextButton")
+	CGui.Parent = BtoolsGui
+	CGui.Size = UDim2.new(0, 50, 0, 50)
+	CGui.Position =UDim2.new(0, 50, 0, 110)
+	CGui.Text = "Part"
+
+	CGui.MouseButton1Click:Connect(function()
+		local PartCreate = Instance.new("Part")
+		PartCreate.Parent = game.Workspace
+		PartCreate.Position = game.Workspace:FindFirstChild(game.Players.LocalPlayer.Name).PrimaryPart.Position
+
+	end)
+
+	local BtoolsButtonAlti = UDim2.new(0, 0, 0, 0)
+
+	local Workspacee = game.Workspace:GetChildren()
+
+	for i = 1, rawlen(Workspacee) do
+		local BtoolsButton = Instance.new("TextButton")
+		BtoolsButton.Parent = BtoolsFrame
+		BtoolsButton.Size = UDim2.new(0, 60, 0, 100)
+		BtoolsButton.Position = BtoolsButtonAlti
+		BtoolsButtonAlti	= BtoolsButton.Position + UDim2.new(0, 0, 0, 100)
+
+		BtoolsButton.BackgroundColor3 = Color3.fromRGB(167, 156, 102)
+		BtoolsButton.Text = tostring(Workspacee[i])
+
+		BtoolsButton.MouseButton1Click:Connect(function()
+			btools(BtoolsButton.Text)
+		end)
+
+	end
+end
+
+
+local Data = game:GetService("InsertService")
+
+local Size = tonumber(20)
+local UIS = game:GetService("UserInputService")
+local ScreenGui = Instance.new("ScreenGui")
+
+ScreenGui.Parent = game.Players.LocalPlayer.PlayerGui
+
+local TL = Instance.new("TextLabel")
+
+TL.Parent = ScreenGui
+TL.Position = UDim2.new(0, 396, 0, 0)
+TL.BackgroundTransparency = 1
+TL.Text = "Use ; to toggle your Admin Gui!"
+TL.TextSize = 15
+
+local TB = Instance.new("TextBox")
+
+TB.Visible = false
+TB.Parent = ScreenGui
+TB.Size = UDim2.new(0, 150, 0, 40)
+TB.Position = UDim2.new(0, 0, 0, 460)
+
+local REs = game.ReplicatedStorage:GetDescendants()
+
+local RemoteEventLabel = Instance.new("TextLabel")
+
+RemoteEventLabel.Text = ""
+RemoteEventLabel.Parent = ScreenGui
+RemoteEventLabel.Size = UDim2.new(0, 350, 0, 200)
+RemoteEventLabel.Position = UDim2.new(0, 309, 0, 150)
+RemoteEventLabel.BackgroundTransparency = 0.2
+RemoteEventLabel.TextSize = Size
+RemoteEventLabel.Visible = false
+
+local MergeRemotes = ""
+local Toggle = 0
+
+
+
+-- This script adds all Remotes from Replicated Storage into this!
+
+for i = 1, rawlen(REs) do
+	if REs[i]:IsA("RemoteEvent") then
+		RemoteEventLabel.Text = RemoteEventLabel.Text..REs[i].Name.."; "
+		print(RemoteEventLabel.Text)
+		wait()
+	end
+	
+end
+
+
+----------------
+--Admin Below!--
+----------------
+
+local TBO = 0
+
+
+UIS.InputBegan:Connect(function(Key)
+	if Key.KeyCode == Enum.KeyCode.Semicolon then
+		if TBO == 1 then
+			TBO = 0
+			TB.Visible = false
+		else
+			TBO = 1
+			TB.Visible = true
+		end
+	end
+end)
+
+
+
+UIS.InputBegan:Connect(function(Key)
+	if Key.KeyCode == Enum.KeyCode.E and TBO ~= 1 then
+		if Toggle == 0 then
+			RemoteEventLabel.Visible = true
+			Toggle = 1
+		else	
+			RemoteEventLabel.Visible = false
+			Toggle = 0
+		end
+	end
+end)
+
+
+
+
+local Command = tostring(TB.Text)
+UIS.InputBegan:Connect(function(Key)
+	
+	if Key.KeyCode == Enum.KeyCode.Return and TBO == 1 then
+		
+		
+		
+		if  string.find(TB.Text, "run") then			  --
+			local Split1 = tostring(TB.Text):split("run(")-- All this here decodes the "run" command
+			local Split2 = tostring(Split1[2]):split(")") --
+			game.ReplicatedStorage[Split2[1]]:FireServer()--
+		end
+		
+		if  string.find(TB.Text, "print") then			  
+			local Split1 = tostring(TB.Text):split("print(")
+			local Split2 = tostring(Split1[2]):split(")") 
+			print(Split2[1])
+		end
+		
+		if  string.find(TB.Text, "btools") then			   
+		btools()
+		
+		end
+		
+		
+		
+	end
+end)
