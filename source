@@ -1,16 +1,98 @@
--- Version 1.0.3
+-- Vital organ here;
+local OS = nil
+local UIS = game:GetService("UserInputService")
+local TE = UIS.TouchEnabled
+local KE = UIS.KeyboardEnabled
+if TE and not KE then
+	print("Mobile")
+	OS = "m"
+	print(OS)
+elseif KE then 
+	
+	print("Keyboard")
+	OS = "k"
+	print(OS)
+		
+	end		-- Mobile/Computer Detector DO NOT MOD IT!
+--
+--
+-- Version 1.1.0
+
 
 function btools(load)
-	print(load)
+	if load == nil then
 	local BtoolsGui = Instance.new("ScreenGui")
 	BtoolsGui.Name = "BtoolsGui"
 	BtoolsGui.Parent = game.Players.LocalPlayer.PlayerGui
+	
+	end
+	
+	if load ~= nil then
+		local BtoolsGui = game.Players.LocalPlayer.PlayerGui.BtoolsGui
+		local Btf = Instance.new("ScrollingFrame")
+		
+		Btf.CanvasSize = UDim2.new(0, 0, 15, 0)
+		Btf.Parent = BtoolsGui
+		Btf.Position = UDim2.new(0.9, 0, 0, 0)
+		Btf.Size = UDim2.new(0, 80, 0, 120)
+		print(load)
+		local Close = Instance.new("TextButton")
+		Close.Size = UDim2.new(0, 35, 0, 35)
+		Close.Parent = Btf
+		Close.Position = UDim2.new(-0.1, 0, 0, -0.1)
+		Close.Text = "Close"
+		Close.MouseButton1Click:Connect(function()
+			Close.Parent:Destroy()
+		end)
+		local loadh = game.Workspace:FindFirstChild(load):GetChildren()
+		local BtoolsGui = game.Players.LocalPlayer.PlayerGui.BtoolsGui
+		local Pos = UDim2.new(0, 0, 0, 0)
+		for i = 1, rawlen(loadh) do
+			local NewButton = Instance.new("TextButton")
+			NewButton.Parent = Btf
+			
+			
+			
+			NewButton.Position = Pos
+			Pos = Pos + UDim2.new(0, 0, 0, 100)
+			NewButton.Size = UDim2.new(0, 100, 0, 100)
+			NewButton.Text = loadh[i].Name
+			NewButton.BackgroundColor3 = Color3.fromRGB(167, 156, 102)
+			
+			local Obj = game.Workspace:FindFirstChild(loadh[i].Name, true)
+			NewButton.MouseButton1Click:Connect(function()
+				if game.ReplicatedStorage:FindFirstChild("DeleteCar") then
+					print(Obj:GetFullName())
+					game.ReplicatedStorage:FindFirstChild("DeleteCar"):FireServer(Obj, {value = Obj})
+
+					
+				else
+					game.Workspace:FindFirstChild(load):FindFirstChild(NewButton.Text):Destroy()
+				end
+				NewButton:Destroy()
+			end)
+			local Close = Instance.new("TextButton")
+			Close.Size = UDim2.new(0, 35, 0, 35)
+			Close.Parent = Btf
+			Close.Position = UDim2.new(-0.1, 0, 0, -0.1)
+			Close.Text = "Close"
+			Close.MouseButton1Click:Connect(function()
+				
+				Close.Parent:Destroy()
+				
+			end)
+		end
+	end
+
+if load == nil then
+local BtoolsGui = game.Players.LocalPlayer.PlayerGui:WaitForChild("BtoolsGui")
 	local BtoolsFrame = Instance.new("ScrollingFrame")
 	BtoolsFrame.Name = "BtoolsFrame"
 	BtoolsFrame.Parent = BtoolsGui
 	BtoolsFrame.Size = UDim2.new(0, 75, 0, 130)
-
+BtoolsFrame.CanvasSize = UDim2.new(0, 0, 15, 0)
 	BtoolsFrame.Position = UDim2.new(0, 100, 0, 100)
+	
 	local CGui = Instance.new("TextButton")
 	CGui.Parent = BtoolsGui
 	CGui.Size = UDim2.new(0, 50, 0, 50)
@@ -43,8 +125,8 @@ function btools(load)
 		end)
 
 	end
-end
-
+	end	
+	end
 
 local Data = game:GetService("InsertService")
 
@@ -90,7 +172,7 @@ local Toggle = 0
 
 for i = 1, rawlen(REs) do
 	if REs[i]:IsA("RemoteEvent") then
-		RemoteEventLabel.Text = RemoteEventLabel.Text..REs[i].Name.."; "
+		RemoteEventLabel.Text = RemoteEventLabel.Text..REs[i].Name..",  "
 		print(RemoteEventLabel.Text)
 		wait()
 	end
@@ -101,9 +183,32 @@ end
 ----------------
 --Admin Below!--
 ----------------
+function command(txt)
+	if  string.find(TB.Text, "run") then			  --
+		local Split1 = tostring(TB.Text):split("run(")-- All this here decodes the "run" command
+		local Split2 = tostring(Split1[2]):split(")") --
+		game.ReplicatedStorage[Split2[1]]:FireServer()--
+	end
+
+	if  string.find(TB.Text, "print") then			  
+		local Split1 = tostring(TB.Text):split("print(")
+		local Split2 = tostring(Split1[2]):split(")") 
+		print(Split2[1])
+	end
+
+	if  string.find(TB.Text, "btools") then			   
+		btools()
+
+	end
+
+
+
+end
+
+
 
 local TBO = 0
-
+	
 
 UIS.InputBegan:Connect(function(Key)
 	if Key.KeyCode == Enum.KeyCode.Semicolon then
@@ -132,33 +237,29 @@ UIS.InputBegan:Connect(function(Key)
 end)
 
 
-
+if OS == "m" then
+	local mbutton = Instance.new("TextButton")
+	TB.Visible = true
+	TB.Position = UDim2.new(0, 0, 0, 200)
+	mbutton.Size = UDim2.new(0, 50, 0, 50)
+	mbutton.Parent = ScreenGui
+	mbutton.Position = UDim2.new(0, 150, 0, 195)
+	mbutton.Text = "Run"
+	local Command = tostring(TB.Text)
+	mbutton.MouseButton1Click:Connect(function()
+		command(Command)
+	end)
+else
 
 local Command = tostring(TB.Text)
 UIS.InputBegan:Connect(function(Key)
 	
 	if Key.KeyCode == Enum.KeyCode.Return and TBO == 1 then
-		
-		
-		
-		if  string.find(TB.Text, "run") then			  --
-			local Split1 = tostring(TB.Text):split("run(")-- All this here decodes the "run" command
-			local Split2 = tostring(Split1[2]):split(")") --
-			game.ReplicatedStorage[Split2[1]]:FireServer()--
-		end
-		
-		if  string.find(TB.Text, "print") then			  
-			local Split1 = tostring(TB.Text):split("print(")
-			local Split2 = tostring(Split1[2]):split(")") 
-			print(Split2[1])
-		end
-		
-		if  string.find(TB.Text, "btools") then			   
-		btools()
-		
-		end
-		
+		command(Command)
 		
 		
 	end
-end)
+		end)
+end
+
+
